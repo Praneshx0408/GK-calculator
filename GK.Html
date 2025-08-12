@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pharmaceutical Dosage Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f0f4f8;
+    }
+
+    .calculator {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      background-color: #007BFF;
+      color: white;
+      font-weight: bold;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 1.2em;
+      text-align: center;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <h2>Dosage Calculator</h2>
+
+    <label for="ageYears">Age (Years):</label>
+    <input type="number" id="ageYears" placeholder="e.g. 5" min="0">
+
+    <label for="ageMonths">Age (Months):</label>
+    <input type="number" id="ageMonths" placeholder="e.g. 6" min="0" max="11">
+
+    <label for="adultDose">Adult Dose (mg):</label>
+    <input type="number" id="adultDose" placeholder="e.g. 500" value="500" min="0">
+
+    <label for="formula">Choose Formula:</label>
+    <select id="formula">
+      <option value="young">Young's Rule</option>
+      <option value="dilling">Dilling's Rule</option>
+      <option value="fried">Fried's Rule</option>
+    </select>
+
+    <button onclick="calculateDose()">Calculate Dose</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function calculateDose() {
+      const ageYears = parseFloat(document.getElementById("ageYears").value) || 0;
+      const ageMonths = parseFloat(document.getElementById("ageMonths").value) || 0;
+      const adultDose = parseFloat(document.getElementById("adultDose").value);
+      const formula = document.getElementById("formula").value;
+      const resultDisplay = document.getElementById("result");
+
+      let childDose;
+
+      if (!adultDose || adultDose <= 0) {
+        resultDisplay.textContent = "Please enter a valid adult dose.";
+        return;
+      }
+
+      switch (formula) {
+        case "young":
+          if (ageYears <= 0) {
+            resultDisplay.textContent = "Young's Rule requires age in years.";
+            return;
+          }
+          childDose = (ageYears / (ageYears + 12)) * adultDose;
+          break;
+
+        case "dilling":
+          if (ageYears <= 0) {
+            resultDisplay.textContent = "Dilling's Rule requires age in years.";
+            return;
+          }
+          childDose = (ageYears / 20) * adultDose;
+          break;
+
+        case "fried":
+          const totalMonths = (ageYears * 12) + ageMonths;
+          if (totalMonths <= 0) {
+            resultDisplay.textContent = "Fried's Rule requires age in months.";
+            return;
+          }
+          childDose = (totalMonths / 150) * adultDose;
+          break;
+      }
+
+      resultDisplay.textContent = Recommended Child Dose: ${childDose.toFixed(2)} mg;
+    }
+  </script>
+</body>
+</html>
